@@ -24,7 +24,7 @@ public class QueueJobRedirectAction implements Action {
 
     @Override
     public String getDisplayName() {
-        return "My Action";
+        return "QueueJobRedirect";
     }
 
     @Override
@@ -34,14 +34,13 @@ public class QueueJobRedirectAction implements Action {
 
     @GET
     public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException {
-        LOGGER.info("doIndex called");
         String queueId = req.getParameter("queueid");
         long id = 0;
         try {
             id = Long.parseLong(queueId);
         } catch (NumberFormatException e) {
             String errorMessage = String.format("QueueId %s isn't a number. Please check your inputs", queueId);
-            LOGGER.info(errorMessage);
+            LOGGER.finest(errorMessage);
             rsp.sendError(404, errorMessage);
             return;
         }
@@ -49,14 +48,20 @@ public class QueueJobRedirectAction implements Action {
         // Logic to check if the build has started
         if (BuildUtils.buildStarted(id)) {
             String newUrl = BuildUtils.buildUrl(job, id);
-            if (newUrl == null) {
-                String errorMessage = String.format("No build with a queue id %d was found in the job %s", id, job.getName());
-                LOGGER.info(errorMessage);
+            if (newUrl == null || newUrl.isBlank()) {
+                String errorMessage =
+                        String.format("No build with a queue id %d was found in the job %s", id, job.getName());
+                LOGGER.finest(errorMessage);
                 rsp.sendError(404, errorMessage);
                 return;
             }
+
+            String message = String.format("Redirecting queuid id %d to %s", id, newUrl);
+            LOGGER.finest(message);
             rsp.sendRedirect2(newUrl);
         } else {
+            String message = String.format("Build %d has not started yet", id);
+            LOGGER.finest(message);
             rsp.sendError(404, "Build not started yet " + queueId);
         }
     }

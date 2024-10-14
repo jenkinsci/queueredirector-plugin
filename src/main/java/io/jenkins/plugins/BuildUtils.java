@@ -15,7 +15,6 @@ public class BuildUtils {
         Queue.Item item = Jenkins.get().getQueue().getItem(queueId);
         if (item == null) {
             // If the item is not in the queue, it might have started
-            LOGGER.info("Didn't find queueId in normal Queue " + queueId);
             return true;
         }
 
@@ -23,7 +22,6 @@ public class BuildUtils {
         Collection<Queue.LeftItem> leftItems = Jenkins.get().getQueue().getLeftItems();
         for (Queue.LeftItem leftitem : leftItems) {
             if (leftitem.getId() == queueId) {
-                LOGGER.info("Found queueId in Left Queue " + queueId);
                 return true;
             }
         }

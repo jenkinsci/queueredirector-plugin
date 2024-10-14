@@ -9,9 +9,9 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 @Extension
-public class MyGlobalAction implements RootAction {
+public class QueueJobRedirectorGlobalAction implements RootAction {
 
-    private static final Logger LOGGER = Logger.getLogger(MyGlobalAction.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(QueueJobRedirectorGlobalAction.class.getName());
 
     @Override
     public String getIconFileName() {
@@ -20,12 +20,12 @@ public class MyGlobalAction implements RootAction {
 
     @Override
     public String getDisplayName() {
-        return "My Global Action";
+        return "QueueJob Redirector Global Action";
     }
 
     @Override
     public String getUrlName() {
-        return "myglobalaction";
+        return "from-queue";
     }
 
     @GET
