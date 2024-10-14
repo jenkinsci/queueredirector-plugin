@@ -40,8 +40,9 @@ public class QueueJobRedirectAction implements Action {
         try {
             id = Long.parseLong(queueId);
         } catch (NumberFormatException e) {
-            LOGGER.warning("queue ID is not an integer: " + queueId);
-            rsp.sendError(404, "Invalid QueueID " + queueId);
+            String errorMessage = String.format("QueueId %s isn't a number. Please check your inputs", queueId);
+            LOGGER.info(errorMessage);
+            rsp.sendError(404, errorMessage);
             return;
         }
 
@@ -49,7 +50,9 @@ public class QueueJobRedirectAction implements Action {
         if (BuildUtils.buildStarted(id)) {
             String newUrl = BuildUtils.buildUrl(job, id);
             if (newUrl == null) {
-                rsp.sendError(404, "This queued job couldn't be found " + id);
+                String errorMessage = String.format("No build with a queue id %d was found in the job %s", id, job.getName());
+                LOGGER.info(errorMessage);
+                rsp.sendError(404, errorMessage);
                 return;
             }
             rsp.sendRedirect2(newUrl);

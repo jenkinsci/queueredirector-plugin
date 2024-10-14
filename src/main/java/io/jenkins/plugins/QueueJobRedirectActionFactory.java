@@ -25,6 +25,6 @@ public class QueueJobRedirectActionFactory extends TransientActionFactory<Job<?,
     @Override
     public Collection<? extends Action> createFor(Job<?, ?> target) {
         LOGGER.info("Creating QueueJobRedirectAction for job: " + target.getName());
-        return Collections.singleton(new MyAction(target));
+        return Collections.singleton(new QueueJobRedirectAction(target));
     }
 }
