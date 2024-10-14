@@ -37,4 +37,18 @@ public class BuildUtils {
         // If no matching build is found, return null or an appropriate message
         return null;
     }
+
+    public static String buildUrl(Long queueId) {
+        for (Job<?, ?> job : Jenkins.get().getAllItems(Job.class)) {
+            for (Run<?, ?> run : job.getBuilds()) {
+                if (run.getQueueId() == queueId) {
+                    // Construct the URL for the build
+                    return Jenkins.get().getRootUrl() + run.getUrl();
+                }
+            }
+        }
+
+        // If no matching build is found, return null or an appropriate message
+        return null;
+    }
 }

@@ -31,5 +31,33 @@ public class QueueJobRedirectorGlobalAction implements RootAction {
     @GET
     public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException {
         LOGGER.info("doDynamic called");
+        String queueId = req.getParameter("queueid");
+        long id = 0;
+        try {
+            id = Long.parseLong(queueId);
+        } catch (NumberFormatException e) {
+            String errorMessage = String.format("QueueId %s isn't a number. Please check your inputs", queueId);
+            LOGGER.finest(errorMessage);
+            rsp.sendError(404, errorMessage);
+            return;
+        }
+
+        if (BuildUtils.buildStarted(id)) {
+            String newUrl = BuildUtils.buildUrl(id);
+            if (newUrl == null || newUrl.isBlank()) {
+                String errorMessage = String.format("No build with a queue id %d was found", id);
+                LOGGER.finest(errorMessage);
+                rsp.sendError(404, errorMessage);
+                return;
+            }
+
+            String message = String.format("Redirecting queuid id %d to %s", id, newUrl);
+            LOGGER.finest(message);
+            rsp.sendRedirect2(newUrl);
+        } else {
+            String message = String.format("Build %d has not started yet", id);
+            LOGGER.finest(message);
+            rsp.sendError(404, "Build not started yet " + queueId);
+        }
     }
 }
