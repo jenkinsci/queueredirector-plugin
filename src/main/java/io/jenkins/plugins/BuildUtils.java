@@ -4,10 +4,15 @@ import hudson.model.Job;
 import hudson.model.Queue;
 import hudson.model.Run;
 import java.util.Collection;
+import java.util.Optional;
 import jenkins.model.Jenkins;
 
 public class BuildUtils {
     public static boolean buildStarted(Long queueId) {
+        if (Jenkins.getInstanceOrNull() == null) {
+            // Jenkins is not running
+            return false;
+        }
         // Get the queue item
         Queue.Item item = Jenkins.get().getQueue().getItem(queueId);
         if (item == null) {
@@ -26,29 +31,38 @@ public class BuildUtils {
         return false;
     }
 
-    public static String buildUrl(Job<?, ?> job, Long queueId) {
+    public static Optional<String> buildUrl(Job<?, ?> job, Long queueId) {
+        if (Jenkins.getInstanceOrNull() == null) {
+            // Jenkins is not running
+            return Optional.empty();
+        }
+
         for (Run<?, ?> run : job.getBuilds()) {
             if (run.getQueueId() == queueId) {
                 // Construct the URL for the build
-                return Jenkins.get().getRootUrl() + run.getUrl();
+                return Optional.of(Jenkins.get().getRootUrl() + run.getUrl());
             }
         }
 
         // If no matching build is found, return null or an appropriate message
-        return null;
+        return Optional.empty();
     }
 
-    public static String buildUrl(Long queueId) {
+    public static Optional<String> buildUrl(Long queueId) {
+        if (Jenkins.getInstanceOrNull() == null) {
+            // Jenkins is not running
+            return Optional.empty();
+        }
         for (Job<?, ?> job : Jenkins.get().getAllItems(Job.class)) {
             for (Run<?, ?> run : job.getBuilds()) {
                 if (run.getQueueId() == queueId) {
                     // Construct the URL for the build
-                    return Jenkins.get().getRootUrl() + run.getUrl();
+                    return Optional.of(Jenkins.get().getRootUrl() + run.getUrl());
                 }
             }
         }
 
         // If no matching build is found, return null or an appropriate message
-        return null;
+        return Optional.empty();
     }
 }

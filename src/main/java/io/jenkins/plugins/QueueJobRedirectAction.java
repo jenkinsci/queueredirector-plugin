@@ -3,6 +3,7 @@ package io.jenkins.plugins;
 import hudson.model.Action;
 import hudson.model.Job;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Logger;
 import javax.ws.rs.GET;
 import org.kohsuke.stapler.StaplerRequest;
@@ -47,8 +48,8 @@ public class QueueJobRedirectAction implements Action {
 
         // Logic to check if the build has started
         if (BuildUtils.buildStarted(id)) {
-            String newUrl = BuildUtils.buildUrl(job, id);
-            if (newUrl == null || newUrl.isBlank()) {
+            Optional<String> newUrl = BuildUtils.buildUrl(job, id);
+            if (newUrl.isEmpty()) {
                 String errorMessage =
                         String.format("No build with a queue id %d was found in the job %s", id, job.getName());
                 LOGGER.finest(errorMessage);
@@ -58,7 +59,7 @@ public class QueueJobRedirectAction implements Action {
 
             String message = String.format("Redirecting queuid id %d to %s", id, newUrl);
             LOGGER.finest(message);
-            rsp.sendRedirect2(newUrl);
+            rsp.sendRedirect2(newUrl.get());
         } else {
             String message = String.format("Build %d has not started yet", id);
             LOGGER.finest(message);
