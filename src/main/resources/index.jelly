@@ -1,0 +1,11 @@
+<?jelly escape-by-default='true'?>
+<div>
+    This plugin provides a reliable URL to access a Jenkins job using only its queue ID. It is particularly useful in scenarios where a job is triggered via the Jenkins API and you need to track the job's progress after it has left the queue.
+
+    The plugin adds two new routes:
+    <ul>
+        <li>A job-specific route, offering faster lookups when the job name is known.</li>
+        <li>A global route, allowing lookups across all jobs for situations where the job name is not known (though this may be slower).</li>
+    </ul>
+</div>
+

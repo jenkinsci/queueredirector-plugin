@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: testservlet-$NEXT_MINOR_VERSION
