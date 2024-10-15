@@ -3,7 +3,10 @@ package io.jenkins.plugins;
 import hudson.model.Job;
 import hudson.model.Queue;
 import hudson.model.Run;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import jenkins.model.Jenkins;
 
 public class BuildUtils {
@@ -42,15 +45,21 @@ public class BuildUtils {
         }
 
         for (Job<?, ?> job : Jenkins.get().getAllItems(Job.class)) {
-            for (Run<?, ?> run : job.getBuilds()) {
+            List<Run<?, ?>> sortedBuilds = job.getBuilds().stream()
+                    .sorted(Comparator.comparingLong(Run::getQueueId))
+                    .collect(Collectors.toList());
+
+            for (Run<?, ?> run : sortedBuilds) {
                 if (run.getQueueId() == queueId) {
-                    // Construct the URL for the build
                     return Optional.of(Jenkins.get().getRootUrl() + run.getUrl());
+                } else {
+                    if (run.getQueueId() > queueId) {
+                        break;
+                    }
                 }
             }
         }
 
-        // If no matching build is found, return null or an appropriate message
         return Optional.empty();
     }
 }
