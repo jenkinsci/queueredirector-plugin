@@ -5,9 +5,9 @@ import hudson.model.RootAction;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Logger;
-import javax.ws.rs.GET;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.verb.GET;
 
 @Extension
 public class QueueJobRedirectorGlobalAction implements RootAction {
