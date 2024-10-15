@@ -31,7 +31,6 @@ public class QueueJobRedirectorGlobalAction implements RootAction {
 
     @GET
     public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException {
-        LOGGER.info("doDynamic called");
         String queueId = req.getParameter("queueid");
         long id = 0;
         try {
