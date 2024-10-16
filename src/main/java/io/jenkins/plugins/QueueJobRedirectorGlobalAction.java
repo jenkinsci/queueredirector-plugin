@@ -30,7 +30,7 @@ public class QueueJobRedirectorGlobalAction implements RootAction {
     }
 
     // lgtm[jenkins/no-permission-check]
-    // lgtm[jenkins/csrf
+    // lgtm[jenkins/csrf]
     @GET
     public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException {
         String queueId = req.getParameter("queueid");
