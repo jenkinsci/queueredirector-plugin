@@ -1,36 +1,32 @@
-# Queue Redirector plugin for Jenkins
+# Queue Redirector Plugin for Jenkins
 
-Adds new route to redirect a queued build to the actual build page once the jkob has started 
-  
+The Queue Redirector plugin adds a new route to Jenkins that allows users to redirect a queued build to its corresponding build page once the job has started.
+
 [![Build Status](https://ci.jenkins.io/job/Plugins/job/queueredirector-plugin/job/main/badge/icon)](https://ci.jenkins.io/job/Plugins/job/queueredirector-plugin/job/main/)
 
-## Essentials
+## Overview
 
-When a build is added to the queue from a remote call, only a queueid is returned to the caller.
-When a job starts, it leaves the queue, to enter the LeftQueue, and stays there for only 5 minutes.
-After that time, there is no way to know what jobid was associated with the queueid
+When a build is added to the queue through a remote call, a `queueid` is returned to the caller. Once the job starts, it leaves the queue and enters the `LeftQueue`, where it remains for only five minutes. After this period, there is no way to trace the original `queueid` to the `jobid`.
 
-This plugin adds a new route to the job that takes a queueid, performs a lookup, and if the jobid is found, automatically redirects to the job page
-This allows you to queue a job using the REAT Api, receive the Queuid, and provide your users with a URL that will always resolve to the proper build.
-  
-New route is available either From the job itself, or from the instance.
-If using the job version, lookup will be faster since there are less builds in the search list.
+The Queue Redirector plugin solves this problem by adding a new route that can take a `queueid`, perform a lookup, and redirect to the corresponding build page if the `jobid` is found. This enables you to queue a job using the REST API, receive a `queueid`, and provide users with a URL that will always resolve to the correct build.
 
-http://localhost:8080/jenkins/job/jobA/from-queue?queueid=123
-http://localhost:8080/jenkins/from-queue?queueid=123
+## New Route
 
-### Troubleshooting
+The new route is accessible either from a specific job or from the Jenkins instance itself:
 
-#### Accessing logs
+- **Job-specific route:**  
+  Example: `http://localhost:8080/jenkins/job/jobA/from-queue?queueid=123`  
+  This approach is faster, as the lookup is limited to fewer builds.
 
-Plugin uses `INFO` and above levels to report things user should worry
-about. For debugging, set it to `FINEST` - note the `ALL` level is not
-sufficient to print these. To configure OpenStack plugin logging in
-Jenkins UI go to *Manage Jenkins \> System Log \> New Log Recorder* and
-use `jenkins.plugins.queueresirector` as the logger name.
+- **Instance-wide route:**  
+  Example: `http://localhost:8080/jenkins/from-queue?queueid=123`
 
+## Troubleshooting
 
+### Accessing Logs
 
+The plugin uses `INFO` and above levels to report events that may require user attention. For debugging purposes, set the logging level to `FINEST`. Note that the `ALL` level is not sufficient to print these messages.
 
+To configure logging for the Queue Redirector plugin in the Jenkins UI, go to:
 
-
+**Manage Jenkins > System Log > New Log Recorder**, and use `jenkins.plugins.queueredirector` as the logger name.
