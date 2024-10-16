@@ -34,6 +34,7 @@ public class QueueJobRedirectAction implements Action {
     }
 
     // lgtm[jenkins/csrf, jenkins/no-permission-check]
+    @SuppressWarnings("lgtm[jenkins/no-permission-check]")
     @GET
     public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException {
         String queueId = req.getParameter("queueid");
